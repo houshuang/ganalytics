@@ -11,12 +11,13 @@
 # This site is very useful for experimenting with search and filter
 # options: http://ga-dev-tools.appspot.com/explorer/
 
-c.token <- ''
+c.token <- 'ya29.AHES6ZTzewlCK118kWClqc9UeKQh1qhuWFaxp0go_jIKtzc'
 
 # Libraries required 
 library(RCurl)
 library(rjson)
 library(stringr)
+library(lubridate)
 
 # Global data variables
 date.format <- '%d-%m-%Y' # european
@@ -57,7 +58,7 @@ getData = function(ids, start.date=format(Sys.time(), "%Y-%m-%d"), end.date=form
   
   if (fix.date) { # will not work without remove.prefix=T
     if ('date' %in% names(ga.data.df)) {
-      ga.data.df$'date' <- as.Date(format(as.Date(ga.data.df$'date', '%Y%m%d'), date.format), format=date.format)
+      ga.data.df$'date' <- as.POSIXct(ga.data.df$'date', format = '%Y%m%d', tz = "UTC")
     }
   }
   
@@ -101,7 +102,7 @@ print("*****************************")
 print("Beginning download")
 
 tbl <- data.frame()
-for(i in 0:5){
+for(i in 0:2){
   dt <- getData('ga:31450814', 
                  
                  start.date=format(Sys.time(), "2010-04-09"),
@@ -111,7 +112,7 @@ for(i in 0:5){
                  # only blog posts, not category pages etc
                  filters='ga:pagePath=~^/blog/20', 
                  
-                 dimensions='ga:pageTitle,ga:date,ga:hour,ga:DayOfWeek',
+                 dimensions='ga:pageTitle,ga:date,ga:DayOfWeek',
                  
                  # grab section by section
                  start=i*10000+1, 
@@ -122,11 +123,15 @@ for(i in 0:5){
 }
 
 # Clean the data, remove blog title from page names
-pagetitle = '407 Indonesian textbooks openly available'
 
 text_to_remove = " \\| Random Stuff that Matters"
 tbl$pageTitle = lapply(tbl$pageTitle, 
                        FUN = function(x) 
                        {str_replace(x, text_to_remove, "")})
+
+# for each date, calculate how many days away from present
+get_day_no <- function(dt) {as.double(as.Date(Sys.time()) - as.Date(dt))}
+
+tbl$dayNo <- get_day_no(tbl$date)
 
 save(tbl, file="./data.Rda")
