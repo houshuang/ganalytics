@@ -22,9 +22,11 @@ table.each do |item|
   num_comments = item[4] ? item[4].split("=>").size : 0
 
   txt = item[3]
-  length = txt.size
   images = txt.scan(/img src/).size
   links = txt.scan(/a href/).size
+
+  txt.gsub!(/<\/?[^>]+>/,' ') # removing html tags
+  length = txt.size
 
   report = Lingua::EN::Readability.new(txt)
   flesch = report.flesch
