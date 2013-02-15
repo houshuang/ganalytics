@@ -1,0 +1,33 @@
+# Exploring the data
+
+```{r setup}
+library(plyr)
+library(stringr)
+library(lubridate)
+load('data.Rda')
+```
+
+## Check if the data is correct
+Let's check the total hits for one given page, and compare with Google Analytics
+
+We'll check the hits for '407 Indonesian textbooks openly available', Google 
+Analytics shows 334 page views.
+```{r checkdata}
+pagetitle = '407 Indonesian textbooks openly available'
+
+# we first select the matching rows, and then sum the visits
+sum(tbl[tbl$pageTitle == pagetitle,]$visits)
+```
+
+Not sure why it's one more. Let's check for a specific day. 
+
+January 19, 2013, there were 23 visits in total on Google Analytics.
+```{r}
+sum(tbl[tbl$date == '2013-01-19',]$visits)
+```
+
+Let me try to plot the access to the Indonesian textbook page.
+```{r}
+ind <- tbl[tbl$pageTitle == pagetitle,]
+ggplot(ind, aes(x=date, y=visits)) + geom_point() + geom_smooth()
+```
