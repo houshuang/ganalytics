@@ -11,5 +11,11 @@ for some of the more advanced stuff I'll need to study up on timeseries analysis
 
 ## Log: Feb 14
 
-So far, I have managed to download all the Google Analytics statistics (I think, have not validated that I got 
+* So far, I have managed to download all the Google Analytics statistics (I think, have not validated that I got 
 all the data). It was surprisingly difficult, dealing with OAuth2.
+
+## Log: Feb 15
+
+* Managed to convert the dates to UNIXct (moved this to get_ga_data.R), and also 
+calculate a column with day numbers (distance from today). 
+* Exported WordPress database into csv, using Export-to-text plugin, resaved it in Excel, and imported it. Added .Rda file as well as the .csv.
