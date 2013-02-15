@@ -8,6 +8,9 @@
 # Make sure you turn on Google Analytics in the list of services here
 # https://code.google.com/apis/console/
 
+# This site is very useful for experimenting with search and filter
+# options: http://ga-dev-tools.appspot.com/explorer/
+
 c.token <- ''
 
 # Libraries required 
