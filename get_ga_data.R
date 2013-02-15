@@ -16,6 +16,7 @@ c.token <- ''
 # Libraries required 
 library(RCurl)
 library(rjson)
+library(stringr)
 
 # Global data variables
 date.format <- '%d-%m-%Y' # european
@@ -119,4 +120,13 @@ for(i in 0:5){
   tbl <- rbind(tbl, dt) # add it to a collector dataframe
   cat("Getting", i*10000+1, "to", i*10000+10000)
 }
+
+# Clean the data, remove blog title from page names
+pagetitle = '407 Indonesian textbooks openly available'
+
+text_to_remove = " \\| Random Stuff that Matters"
+tbl$pageTitle = lapply(tbl$pageTitle, 
+                       FUN = function(x) 
+                       {str_replace(x, text_to_remove, "")})
+
 save(tbl, file="./data.Rda")
