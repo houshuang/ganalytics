@@ -1,10 +1,15 @@
 # Exploring the data
 
 ```{r setup}
+setwd("~/src/ganalytics")
 library(plyr)
+library(ggplot2)
 library(stringr)
-library(lubridate)
+source('./utility.R')
 load('data.Rda')
+load('wp_posts.Rda')
+load('wp_stats.Rda')
+load('posts.Rda')
 ```
 
 ## Check if the data is correct
@@ -23,11 +28,37 @@ Not sure why it's one more. Let's check for a specific day.
 
 January 19, 2013, there were 23 visits in total on Google Analytics.
 ```{r}
-sum(tbl[tbl$date == '2013-01-19',]$visits)
+sum(tbl[tbl$date == makedate('2013-01-19'),]$visits)
 ```
 
 Let me try to plot the access to the Indonesian textbook page.
 ```{r}
 ind <- tbl[tbl$pageTitle == pagetitle,]
 ggplot(ind, aes(x=date, y=visits)) + geom_point() + geom_smooth()
+```
+
+Is there any correlation between length and reading level?
+```{r}
+ggplot(wp_stats[wp_stats$flesch > 0,], aes(x = flesch, y = length)) + geom_point() + geom_smooth()
+```
+Doesn't seem so. (For some reason, it doesn't work well on a few foreign songs etc, gives negative level, so I exclude these). 
+
+Showing Flesch-Kincaid level over log(total visits) - no correlation?
+```{r}
+ggplot(posts[posts$flesch > 0,], aes(x = log(totvisits), y= flesch)) + geom_point() + geom_smooth()
+```
+
+Log of total visits over links
+```{r}
+ggplot(posts, aes(x = log(totvisits), y= links)) + geom_point() + geom_smooth()
+```
+
+Log of total visits over comments
+```{r}
+ggplot(posts, aes(x = log(totvisits), y= num_comments)) + geom_point() + geom_smooth() 
+```
+
+Length over total visits
+```{r}
+ggplot(posts, aes(x = log(totvisits), y= length)) + geom_point() + geom_smooth() 
 ```
